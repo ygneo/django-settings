@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-import os
+import re
 from setuptools import setup, find_packages
 
-import django_settings
-
+version = re.search(
+    r"VERSION = ['\"](.*)['\"]",
+    open("django_settings/__init__.py").read()
+).group(1)
 
 setup(
     name='django-settings',
-    version=django_settings.__version__,
+    version=version,
     description='Simple django reusable application for storing project settings in database.',
     author='Kuba Janoszek',
     author_email='kuba.janoszek@gmail.com',
@@ -21,6 +23,8 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
         'Framework :: Django',
     ],
     zip_safe=False,
@@ -30,4 +34,3 @@ setup(
 # Usage of setup.py:
 # $> python setup.py register             # registering package on PYPI
 # $> python setup.py build sdist upload   # build, make source dist and upload to PYPI
-

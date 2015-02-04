@@ -4,6 +4,8 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext_lazy as _
+from django.dispatch import receiver
+from django.db.models.signals import post_syncdb
 
 # app local
 from . import conf
@@ -74,10 +76,10 @@ del new_registry
 # end ###############################################################
 
 
-
 # Builtin settings models
 class Email(Model):
     value = models.EmailField()
+
     class Meta:
         abstract = True
 registry.register(Email)
@@ -85,6 +87,7 @@ registry.register(Email)
 
 class String(Model):
     value = models.CharField(max_length=254)
+
     class Meta:
         abstract = True
 registry.register(String)
@@ -92,6 +95,7 @@ registry.register(String)
 
 class Integer(Model):
     value = models.IntegerField()
+
     class Meta:
         abstract = True
 registry.register(Integer)
@@ -99,7 +103,14 @@ registry.register(Integer)
 
 class PositiveInteger(Model):
     value = models.PositiveIntegerField()
+
     class Meta:
         abstract = True
 registry.register(PositiveInteger)
 # end ###################
+
+
+@receiver(post_syncdb)
+def handle_post_syncdb(sender, **kwargs):
+    from django_settings.dataapi import initialize_data
+    initialize_data()
